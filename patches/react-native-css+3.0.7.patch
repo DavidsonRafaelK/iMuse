@@ -1,0 +1,60 @@
+diff --git a/node_modules/react-native-css/dist/commonjs/babel/import-plugin.js b/node_modules/react-native-css/dist/commonjs/babel/import-plugin.js
+index c5f49f3..16c03ae 100644
+--- a/node_modules/react-native-css/dist/commonjs/babel/import-plugin.js
++++ b/node_modules/react-native-css/dist/commonjs/babel/import-plugin.js
+@@ -15,7 +15,7 @@ function _default({
+   const thisModuleDist = (0, _path.resolve)(__dirname, "../../../dist");
+   const thisModuleSrc = (0, _path.resolve)(__dirname, "../../../src");
+   function isFromThisModule(filename) {
+-    return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc);
++    return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc) || filename.includes(`${_path.sep}node_modules${_path.sep}react-native-web${_path.sep}`);
+   }
+   return {
+     name: "Rewrite react-native to react-native-css",
+diff --git a/node_modules/react-native-css/dist/commonjs/metro/resolver.js b/node_modules/react-native-css/dist/commonjs/metro/resolver.js
+index 314ffa1..d851f34 100644
+--- a/node_modules/react-native-css/dist/commonjs/metro/resolver.js
++++ b/node_modules/react-native-css/dist/commonjs/metro/resolver.js
+@@ -10,7 +10,7 @@ var _allowedModules = require("../babel/allowedModules.js");
+ const thisModuleDist = (0, _nodePath.resolve)(__dirname, "../../../dist");
+ const thisModuleSrc = (0, _nodePath.resolve)(__dirname, "../../../src");
+ function isFromThisModule(filename) {
+-  return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc);
++  return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc) || filename.includes(`${_nodePath.sep}node_modules${_nodePath.sep}react-native-web${_nodePath.sep}`);
+ }
+ function nativeResolver(resolver, context, moduleName, platform) {
+   const resolution = resolver(context, moduleName, platform);
+diff --git a/node_modules/react-native-css/dist/module/babel/import-plugin.js b/node_modules/react-native-css/dist/module/babel/import-plugin.js
+index 345305c..7a89108 100644
+--- a/node_modules/react-native-css/dist/module/babel/import-plugin.js
++++ b/node_modules/react-native-css/dist/module/babel/import-plugin.js
+@@ -1,6 +1,6 @@
+ "use strict";
+ 
+-import { resolve } from "path";
++import { resolve, sep } from "path";
+ import { getInteropRequireDefaultSource } from "./helpers.js";
+ import { handleReactNativeIdentifierRequire, handleReactNativeImport, handleReactNativeObjectPatternRequire } from "./react-native.js";
+ import { handleReactNativeWebIdentifierRequire, handleReactNativeWebImport, handleReactNativeWebObjectPatternRequire } from "./react-native-web.js";
+@@ -11,7 +11,7 @@ export default function ({
+   const thisModuleDist = resolve(__dirname, "../../../dist");
+   const thisModuleSrc = resolve(__dirname, "../../../src");
+   function isFromThisModule(filename) {
+-    return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc);
++    return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc) || filename.includes(`${sep}node_modules${sep}react-native-web${sep}`);
+   }
+   return {
+     name: "Rewrite react-native to react-native-css",
+diff --git a/node_modules/react-native-css/dist/module/metro/resolver.js b/node_modules/react-native-css/dist/module/metro/resolver.js
+index 8d1c73b..d5d44a8 100644
+--- a/node_modules/react-native-css/dist/module/metro/resolver.js
++++ b/node_modules/react-native-css/dist/module/metro/resolver.js
+@@ -5,7 +5,7 @@ import { allowedModules } from "../babel/allowedModules.js";
+ const thisModuleDist = resolve(__dirname, "../../../dist");
+ const thisModuleSrc = resolve(__dirname, "../../../src");
+ function isFromThisModule(filename) {
+-  return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc);
++  return filename.startsWith(thisModuleDist) || filename.startsWith(thisModuleSrc) || filename.includes(`${sep}node_modules${sep}react-native-web${sep}`);
+ }
+ export function nativeResolver(resolver, context, moduleName, platform) {
+   const resolution = resolver(context, moduleName, platform);

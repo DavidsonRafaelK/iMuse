@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { useColorScheme } from "react-native";
-import { Home, Library, Plus, Search } from "lucide-react-native";
+import { Home, Library, Plus, Radio, Search } from "lucide-react-native";
 
 import { themeColors } from "@/constants/theme-colors";
 
@@ -32,6 +32,13 @@ export default function TabLayout() {
         options={{
           title: "New",
           tabBarIcon: ({ color, size }) => <Plus color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="streaming"
+        options={{
+          title: "Streaming",
+          tabBarIcon: ({ color, size }) => <Radio color={color} size={size} />,
         }}
       />
       <Tabs.Screen

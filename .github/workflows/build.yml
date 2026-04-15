@@ -27,6 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate expo-env.d.ts
+        run: |
+          printf '%s\n' '/// <reference types="expo/types" />' '' '// NOTE: This file should not be edited and should be in your git ignore' > expo-env.d.ts
+
       - name: Typecheck
         run: npx tsc --noEmit
 

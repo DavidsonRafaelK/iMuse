@@ -10,62 +10,63 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ChevronRight, MoreVertical } from "lucide-react-native";
 
+import { ScreenHeader } from "@/components/screen-header";
 import { themeColors } from "@/constants/theme-colors";
 
 const listenNowItems = [
   {
     id: "1",
     title: "Midnight Drive",
-    genre: "Lo-fi",
+    description: "Chill, late-night beats built for empty streets.",
     image:
       "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "2",
     title: "Golden Hour",
-    genre: "Pop",
+    description: "Sun-soaked pop hooks with a feel-good glow.",
     image:
       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "3",
     title: "Keys & Strings",
-    genre: "Jazz",
+    description: "Warm jazz textures for a slow, easy evening.",
     image:
       "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "4",
     title: "Stage Lights",
-    genre: "Rock",
+    description: "Big guitars and bigger choruses, arena-ready.",
     image:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "5",
     title: "Neon Nights",
-    genre: "Synthwave",
+    description: "Retro synths and driving basslines after dark.",
     image:
       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "6",
     title: "Sunday Morning",
-    genre: "Acoustic",
+    description: "Gentle acoustic tracks to ease into the day.",
     image:
       "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "7",
     title: "Bass Drop",
-    genre: "EDM",
+    description: "High-energy EDM built to keep the floor moving.",
     image:
       "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=400&q=60",
   },
   {
     id: "8",
     title: "Late Night Vibes",
-    genre: "R&B",
+    description: "Smooth R&B grooves for winding down slow.",
     image:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=400&q=60",
   },
@@ -515,6 +516,7 @@ export default function Home() {
       style={{ flex: 1, backgroundColor: colors.background }}
     >
       <View className="flex-1 bg-background">
+        <ScreenHeader title="Home" />
         <ScrollView contentContainerClassName="pb-8">
           <View className="px-4 pt-4">
             <Text className="text-xl font-semibold uppercase tracking-wide text-muted-foreground">
@@ -541,8 +543,11 @@ export default function Home() {
                     source={{ uri: item.image }}
                     className="h-64 w-64 rounded-2xl border border-slate-50 dark:border-gray-800"
                   />
-                  <Text className="absolute bottom-3 left-3 text-3xl font-semibold text-white">
-                    {item.genre}
+                  <Text
+                    className="absolute bottom-3 left-3 right-3 text-sm text-white"
+                    numberOfLines={2}
+                  >
+                    {item.description}
                   </Text>
                 </View>
                 <Text
@@ -625,7 +630,7 @@ export default function Home() {
               <View key={item.id} className="w-36">
                 <Image
                   source={{ uri: item.image }}
-                  className="h-36 w-36 rounded-md"
+                  className="h-36 w-36 rounded-md border border-slate-50 dark:border-gray-800"
                 />
                 <Text
                   className="mt-2 font-medium text-foreground"
@@ -660,7 +665,7 @@ export default function Home() {
               <View key={item.id} className="w-36">
                 <Image
                   source={{ uri: item.image }}
-                  className="h-36 w-36 rounded-md"
+                  className="h-36 w-36 rounded-md border border-slate-50 dark:border-gray-800"
                 />
                 <Text
                   className="mt-2 font-medium text-foreground"

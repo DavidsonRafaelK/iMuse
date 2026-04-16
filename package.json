@@ -9,6 +9,7 @@
     "@gluestack-ui/utils": "^5.0.6",
     "@legendapp/motion": "^2.5.3",
     "expo": "~57.0.14",
+    "expo-blur": "~57.0.2",
     "expo-constants": "~57.0.12",
     "expo-device": "~57.0.1",
     "expo-font": "~57.0.1",
@@ -42,6 +43,8 @@
     "@tailwindcss/postcss": "^4.3.3",
     "@types/react": "~19.2.2",
     "babel-plugin-module-resolver": "^5.0.3",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.1",
     "patch-package": "^8.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3"

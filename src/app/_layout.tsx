@@ -18,7 +18,10 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider mode="system">
       <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="album/[id]" options={{ animation: "fade" }} />
+      </Stack>
     </GluestackUIProvider>
   );
 }

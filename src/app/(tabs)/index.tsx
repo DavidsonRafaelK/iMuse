@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import {
   Image,
   Pressable,
@@ -8,69 +9,15 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Link } from "expo-router";
+import { BlurTargetView } from "expo-blur";
 import { ChevronRight, MoreVertical } from "lucide-react-native";
 
 import { ScreenHeader } from "@/components/screen-header";
+import { SongOptionsSheet, type SongOptionsSong } from "@/components/song-options-sheet";
 import { themeColors } from "@/constants/theme-colors";
+import { listenNowItems } from "@/data/listen-now";
 
-const listenNowItems = [
-  {
-    id: "1",
-    title: "Midnight Drive",
-    description: "Chill, late-night beats built for empty streets.",
-    image:
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "2",
-    title: "Golden Hour",
-    description: "Sun-soaked pop hooks with a feel-good glow.",
-    image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "3",
-    title: "Keys & Strings",
-    description: "Warm jazz textures for a slow, easy evening.",
-    image:
-      "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "4",
-    title: "Stage Lights",
-    description: "Big guitars and bigger choruses, arena-ready.",
-    image:
-      "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "5",
-    title: "Neon Nights",
-    description: "Retro synths and driving basslines after dark.",
-    image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "6",
-    title: "Sunday Morning",
-    description: "Gentle acoustic tracks to ease into the day.",
-    image:
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "7",
-    title: "Bass Drop",
-    description: "High-energy EDM built to keep the floor moving.",
-    image:
-      "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=400&q=60",
-  },
-  {
-    id: "8",
-    title: "Late Night Vibes",
-    description: "Smooth R&B grooves for winding down slow.",
-    image:
-      "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=400&q=60",
-  },
-];
 
 const favouriteItems = [
   {
@@ -510,11 +457,17 @@ export default function Home() {
   // Cap page width on wide/desktop viewports so rows don't stretch edge to edge.
   const favouritePageWidth = Math.min(windowWidth - 32, 420);
 
+  const [selectedSong, setSelectedSong] = useState<SongOptionsSong | null>(
+    null,
+  );
+  const blurTargetRef = useRef<View>(null);
+
   return (
     <SafeAreaView
       edges={["top"]}
       style={{ flex: 1, backgroundColor: colors.background }}
     >
+      <BlurTargetView ref={blurTargetRef} style={{ flex: 1 }}>
       <View className="flex-1 bg-background">
         <ScreenHeader title="Home" />
         <ScrollView contentContainerClassName="pb-8">
@@ -537,26 +490,28 @@ export default function Home() {
             contentContainerClassName="gap-4 px-4"
           >
             {listenNowItems.map((item) => (
-              <View key={item.id} className="w-64">
-                <View className="relative">
-                  <Image
-                    source={{ uri: item.image }}
-                    className="h-64 w-64 rounded-2xl border border-slate-50 dark:border-gray-800"
-                  />
+              <Link key={item.id} href={`/album/${item.id}`} asChild>
+                <Pressable className="w-64">
+                  <View className="relative">
+                    <Image
+                      source={{ uri: item.image }}
+                      className="h-64 w-64 rounded-2xl border border-slate-50 dark:border-gray-800"
+                    />
+                    <Text
+                      className="absolute bottom-3 left-3 right-3 text-sm text-white"
+                      numberOfLines={2}
+                    >
+                      {item.description}
+                    </Text>
+                  </View>
                   <Text
-                    className="absolute bottom-3 left-3 right-3 text-sm text-white"
-                    numberOfLines={2}
+                    className="mt-2 font-medium text-foreground text-xl"
+                    numberOfLines={1}
                   >
-                    {item.description}
+                    {item.title}
                   </Text>
-                </View>
-                <Text
-                  className="mt-2 font-medium text-foreground text-xl"
-                  numberOfLines={1}
-                >
-                  {item.title}
-                </Text>
-              </View>
+                </Pressable>
+              </Link>
             ))}
           </ScrollView>
 
@@ -584,7 +539,7 @@ export default function Home() {
                     <View key={item.id} className="flex-row items-center gap-3">
                       <Image
                         source={{ uri: item.image }}
-                        className="h-14 w-14 rounded-xl border border-slate-50 dark:border-gray-800"
+                        className="h-14 w-14 rounded-2xl border border-slate-50 dark:border-gray-800"
                       />
                       <View className="flex-1">
                         <Text
@@ -602,7 +557,13 @@ export default function Home() {
                       </View>
                       <Pressable
                         className="p-2"
-                        onPress={() => console.log("options", item.id)}
+                        onPress={() =>
+                          setSelectedSong({
+                            title: item.title,
+                            artist: item.artist,
+                            image: item.image,
+                          })
+                        }
                       >
                         <MoreVertical size={20} color={colors.mutedForeground} />
                       </Pressable>
@@ -630,7 +591,7 @@ export default function Home() {
               <View key={item.id} className="w-36">
                 <Image
                   source={{ uri: item.image }}
-                  className="h-36 w-36 rounded-md border border-slate-50 dark:border-gray-800"
+                  className="h-36 w-36 rounded-2xl border border-slate-50 dark:border-gray-800"
                 />
                 <Text
                   className="mt-2 font-medium text-foreground"
@@ -665,7 +626,7 @@ export default function Home() {
               <View key={item.id} className="w-36">
                 <Image
                   source={{ uri: item.image }}
-                  className="h-36 w-36 rounded-md border border-slate-50 dark:border-gray-800"
+                  className="h-36 w-36 rounded-2xl border border-slate-50 dark:border-gray-800"
                 />
                 <Text
                   className="mt-2 font-medium text-foreground"
@@ -706,6 +667,12 @@ export default function Home() {
           </View>
         </ScrollView>
       </View>
+      </BlurTargetView>
+      <SongOptionsSheet
+        song={selectedSong}
+        onClose={() => setSelectedSong(null)}
+        blurTarget={blurTargetRef}
+      />
     </SafeAreaView>
   );
 }

@@ -1,12 +1,10 @@
 import { Tabs } from "expo-router";
-import { useColorScheme } from "react-native";
 import { Home, Library, Plus, Radio, Search } from "lucide-react-native";
 
-import { themeColors } from "@/constants/theme-colors";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 export default function TabLayout() {
-  const scheme = useColorScheme() === "dark" ? "dark" : "light";
-  const colors = themeColors[scheme];
+  const { colors } = useThemeColors();
 
   return (
     <Tabs

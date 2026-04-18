@@ -1,5 +1,5 @@
 import { useEffect, useState, type RefObject } from "react";
-import { Image, Pressable, Text, useColorScheme, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
   runOnJS,
@@ -10,7 +10,7 @@ import Animated, {
 import { BlurView } from "expo-blur";
 import { Info, Radio, Share2 } from "lucide-react-native";
 
-import { themeColors } from "@/constants/theme-colors";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 export type SongOptionsSong = {
   title: string;
@@ -37,8 +37,7 @@ export function SongOptionsSheet({
   onClose: () => void;
   blurTarget?: RefObject<View | null>;
 }) {
-  const scheme = useColorScheme() === "dark" ? "dark" : "light";
-  const colors = themeColors[scheme];
+  const { scheme, colors } = useThemeColors();
 
   const [mounted, setMounted] = useState(false);
   const backdropOpacity = useSharedValue(0);

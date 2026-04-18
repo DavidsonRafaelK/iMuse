@@ -1,11 +1,10 @@
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { MoreVertical } from "lucide-react-native";
 
-import { themeColors } from "@/constants/theme-colors";
+import { useThemeColors } from "@/hooks/use-theme-colors";
 
 export function ScreenHeader({ title }: { title: string }) {
-  const scheme = useColorScheme() === "dark" ? "dark" : "light";
-  const colors = themeColors[scheme];
+  const { colors } = useThemeColors();
 
   return (
     <View className="flex-row items-center justify-between px-4 py-2">

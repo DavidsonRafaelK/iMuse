@@ -1,19 +1,18 @@
 import { useEffect } from "react";
-import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { themeColors } from '@/constants/theme-colors';
+import { useThemeColors } from '@/hooks/use-theme-colors';
 import '@/global.css';
 
 export default function RootLayout() {
-  const scheme = useColorScheme() === "dark" ? "dark" : "light";
+  const { scheme, colors } = useThemeColors();
 
   useEffect(() => {
-    SystemUI.setBackgroundColorAsync(themeColors[scheme].background);
-  }, [scheme]);
+    SystemUI.setBackgroundColorAsync(colors.background);
+  }, [colors.background]);
 
   return (
     <GluestackUIProvider mode="system">

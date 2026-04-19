@@ -37,6 +37,9 @@ yarn-error.*
 # JetBrains
 .idea/
 
+# Python
+.venv/
+
 # typescript
 *.tsbuildinfo
 

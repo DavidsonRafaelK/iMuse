@@ -1,0 +1,91 @@
+import { Image, Pressable, Text, View } from "react-native";
+import { Pause, Play, SkipBack, SkipForward } from "lucide-react-native";
+
+import { PlayerProgressBar } from "@/components/now-playing/player-progress-bar";
+import { useThemeColors } from "@/hooks/use-theme-colors";
+
+export function PlayerCoverView({
+  image,
+  title,
+  artist,
+  isRealSong,
+  playing,
+  currentTime,
+  duration,
+  onTogglePlayback,
+  onSeek,
+}: {
+  image: string;
+  title: string;
+  artist: string;
+  isRealSong: boolean;
+  playing: boolean;
+  currentTime: number;
+  duration: number;
+  onTogglePlayback: () => void;
+  onSeek: (seconds: number) => void;
+}) {
+  const { colors } = useThemeColors();
+
+  return (
+    <View className="w-full max-w-2xl flex-1 items-center justify-center px-8">
+      <Image
+        source={{ uri: image }}
+        className="h-72 w-72 rounded-2xl border border-slate-50 dark:border-gray-800"
+      />
+      <Text className="mt-6 text-center text-2xl font-bold text-foreground">
+        {title}
+      </Text>
+      <Text className="mt-1 text-center text-lg text-muted-foreground">
+        {artist}
+      </Text>
+
+      <View className="mt-8 w-full">
+        <PlayerProgressBar
+          currentTime={currentTime}
+          duration={duration}
+          onSeek={onSeek}
+        />
+      </View>
+
+      <View className="mt-4 flex-row items-center gap-10">
+        <Pressable className="p-2" onPress={() => console.log("previous")}>
+          <SkipBack
+            color={colors.foreground}
+            fill={colors.foreground}
+            size={26}
+          />
+        </Pressable>
+        <Pressable
+          className={
+            isRealSong
+              ? "h-16 w-16 items-center justify-center rounded-full bg-foreground"
+              : "h-16 w-16 items-center justify-center rounded-full bg-secondary"
+          }
+          onPress={onTogglePlayback}
+        >
+          {playing ? (
+            <Pause
+              color={isRealSong ? colors.background : colors.foreground}
+              fill={isRealSong ? colors.background : "transparent"}
+              size={26}
+            />
+          ) : (
+            <Play
+              color={isRealSong ? colors.background : colors.foreground}
+              fill={isRealSong ? colors.background : "transparent"}
+              size={26}
+            />
+          )}
+        </Pressable>
+        <Pressable className="p-2" onPress={() => console.log("next")}>
+          <SkipForward
+            color={colors.foreground}
+            fill={colors.foreground}
+            size={26}
+          />
+        </Pressable>
+      </View>
+    </View>
+  );
+}

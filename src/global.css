@@ -3,11 +3,6 @@
 @import "tailwindcss/utilities.css";
 @import "nativewind/theme";
 
-/* ─── Theme: design tokens (light / dark) ─────────────────────────
-   1. :root              — light defaults (all platforms)
-   2. @media dark :root  — dark defaults; nativewind maps this to
-                           Appearance.getColorScheme() on native.
-   3. :root.dark / :root.light — higher specificity for web class toggle. */
 @layer theme {
   :root {
     --primary: 23 23 23;

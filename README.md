@@ -1,6 +1,38 @@
-# Welcome to your Expo app 👋
+# iMuse
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A music streaming app UI built with Expo Router, NativeWind v5, and gluestack-ui.
+
+## Tech stack
+
+- Expo SDK 57 + Expo Router (file-based routing)
+- React Native 0.86, React 19
+- NativeWind v5 (Tailwind CSS v4 for React Native)
+- gluestack-ui
+- expo-audio for playback
+- react-native-reanimated for gesture-driven and animated transitions
+- TypeScript
+
+## Features
+
+- Bottom tab navigation: Home, New, Streaming, Library, Search
+- Home screen sections: Listen Now (album carousel with tap-to-open detail), Favourite (paged song list), New This Week, Recent Releases, More to Explore
+- Album detail screen with tracklist, play/shuffle/add controls, and a song options sheet (share, view credits, create station)
+- Now Playing screen with:
+  - Real audio playback (one bundled track, `assets/audio/impostor-syndrome.mp3`)
+  - Synchronised lyrics read directly from the file's embedded SYLT ID3 tag (see `src/lib/id3.ts`), auto-scrolling and centering the active line as the song plays
+  - A drag-to-reveal full player view (cover art, progress bar, transport controls) that tracks the user's swipe in real time
+  - All other songs fall back to placeholder lyrics and disabled playback controls, since no audio file backs them
+- Full light/dark theme support, including the Android status bar and system navigation bar
+- Responsive layout on web (content is capped and centered on wide viewports)
+
+## Project structure
+
+- `src/app` - screens and routes (Expo Router)
+- `src/components` - reusable UI components, grouped by feature (`home`, `album`, `now-playing`)
+- `src/data` - static data and the real song's runtime-detected metadata
+- `src/hooks` - shared hooks (theme colors, paged widths, playback navigation)
+- `src/lib/id3.ts` - the ID3v2 tag parser used to read the bundled track's metadata and lyrics
+- `assets/audio` - the bundled mp3 used by the Now Playing screen
 
 ## Get started
 
@@ -22,35 +54,15 @@ In the output, you'll find options to open the app in a
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- a web browser, via `npx expo start --web`
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Notes on the real song
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Only "Impostor Syndrome" in the Favourite section has real audio and lyrics. Its artist, album, year, cover art, and synchronised lyrics are parsed at runtime from the mp3's ID3 tags, not hardcoded in the app. If the file's tags change, the app picks up the new values automatically.
 
 ## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Expo documentation](https://docs.expo.dev/)
+- [Expo Router documentation](https://docs.expo.dev/router/introduction/)
+- [NativeWind documentation](https://www.nativewind.dev/)
+- [gluestack-ui documentation](https://gluestack.io/ui/docs/home/overview/quick-start)

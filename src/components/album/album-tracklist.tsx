@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { MoreVertical } from "lucide-react-native";
 
+import { usePlaySong } from "@/hooks/use-play-song";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import type { Track } from "@/data/listen-now";
 import type { SongOptionsSong } from "@/components/song-options-sheet";
@@ -15,11 +16,22 @@ export function AlbumTracklist({
   onSelectTrack: (song: SongOptionsSong) => void;
 }) {
   const { colors } = useThemeColors();
+  const playSong = usePlaySong();
 
   return (
     <View className="mt-6 px-4">
       {tracks.map((track, i) => (
-        <View key={track.title} className="flex-row items-center gap-3 py-3">
+        <Pressable
+          key={track.title}
+          className="flex-row items-center gap-3 py-3"
+          onPress={() =>
+            playSong({
+              title: track.title,
+              artist: album.artist,
+              image: album.image,
+            })
+          }
+        >
           <Text className="w-5 text-muted-foreground">{i + 1}</Text>
           <Text className="flex-1 text-foreground" numberOfLines={1}>
             {track.title}
@@ -37,7 +49,7 @@ export function AlbumTracklist({
           >
             <MoreVertical size={18} color={colors.mutedForeground} />
           </Pressable>
-        </View>
+        </Pressable>
       ))}
     </View>
   );

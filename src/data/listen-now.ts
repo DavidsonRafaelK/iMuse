@@ -9,13 +9,23 @@ export type ListenNowItem = {
   artist: string;
   description: string;
   genre: string;
-  year: string;
   image: string;
   releaseDate: string;
-  duration: string;
-  copyright: string;
+  label: string;
   tracks: Track[];
 };
+
+export function getReleaseYear(item: ListenNowItem): string {
+  return item.releaseDate.split(", ").pop() ?? "";
+}
+
+export function getSongCountLabel(item: ListenNowItem): string {
+  return `${item.tracks.length} songs`;
+}
+
+export function getCopyrightLabel(item: ListenNowItem): string {
+  return `© ${getReleaseYear(item)} ${item.artist} under exclusive license to ${item.label}`;
+}
 
 export const listenNowItems: ListenNowItem[] = [
   {
@@ -24,12 +34,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "Wren Halley",
     description: "Chill, late-night beats built for empty streets.",
     genre: "Lo-fi",
-    year: "2026",
     image:
       "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60",
     releaseDate: "August 14, 2026",
-    duration: "8 songs, 27 minutes",
-    copyright: "℗ 2026 Wren Halley under exclusive license to Nightbloom Records",
+    label: "Nightbloom Records",
     tracks: [
       { title: "Empty Streets", highlighted: true },
       { title: "Rearview", highlighted: true },
@@ -39,6 +47,18 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Quiet Exit" },
       { title: "Static Radio" },
       { title: "Home By Sunrise" },
+      { title: "Track 9" },
+      { title: "Track 10" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -47,12 +67,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "Nova Rae",
     description: "Sun-soaked pop hooks with a feel-good glow.",
     genre: "Pop",
-    year: "2026",
     image:
       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=60",
     releaseDate: "July 2, 2026",
-    duration: "10 songs, 33 minutes",
-    copyright: "℗ 2026 Nova Rae under exclusive license to Coastline Music",
+    label: "Coastline Music",
     tracks: [
       { title: "Golden Hour", highlighted: true },
       { title: "Sunburnt", highlighted: true },
@@ -64,6 +82,16 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Halfway Home" },
       { title: "Tan Lines" },
       { title: "Last Light" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -72,12 +100,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "The Night Owls",
     description: "Warm jazz textures for a slow, easy evening.",
     genre: "Jazz",
-    year: "2025",
     image:
       "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=400&q=60",
     releaseDate: "November 9, 2025",
-    duration: "7 songs, 31 minutes",
-    copyright: "℗ 2025 The Night Owls under exclusive license to Blue Room Records",
+    label: "Blue Room Records",
     tracks: [
       { title: "Keys & Strings", highlighted: true },
       { title: "Late Set", highlighted: true },
@@ -86,6 +112,19 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Last Call" },
       { title: "Blue Note" },
       { title: "Closing Time" },
+      { title: "Track 8" },
+      { title: "Track 9" },
+      { title: "Track 10" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -94,12 +133,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "Corner Store",
     description: "Big guitars and bigger choruses, arena-ready.",
     genre: "Rock",
-    year: "2026",
     image:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=400&q=60",
     releaseDate: "March 21, 2026",
-    duration: "9 songs, 36 minutes",
-    copyright: "℗ 2026 Corner Store under exclusive license to Amplitude Records",
+    label: "Amplitude Records",
     tracks: [
       { title: "Stage Lights", highlighted: true },
       { title: "Encore", highlighted: true },
@@ -110,6 +147,17 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "One More Song" },
       { title: "House Lights Up" },
       { title: "Last Chord" },
+      { title: "Track 10" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -118,12 +166,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "Kito Ren",
     description: "Retro synths and driving basslines after dark.",
     genre: "Synthwave",
-    year: "2026",
     image:
       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=60",
     releaseDate: "May 30, 2026",
-    duration: "8 songs, 29 minutes",
-    copyright: "℗ 2026 Kito Ren under exclusive license to Gridline Audio",
+    label: "Gridline Audio",
     tracks: [
       { title: "Neon Nights", highlighted: true },
       { title: "Drive Mode", highlighted: true },
@@ -133,6 +179,18 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Afterhours" },
       { title: "Rewind" },
       { title: "Fade to Neon" },
+      { title: "Track 9" },
+      { title: "Track 10" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -141,12 +199,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "Iris Calloway",
     description: "Gentle acoustic tracks to ease into the day.",
     genre: "Acoustic",
-    year: "2025",
     image:
       "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=60",
     releaseDate: "October 5, 2025",
-    duration: "6 songs, 22 minutes",
-    copyright: "℗ 2025 Iris Calloway under exclusive license to Quiet House Records",
+    label: "Quiet House Records",
     tracks: [
       { title: "Sunday Morning", highlighted: true },
       { title: "Coffee & Rain", highlighted: true },
@@ -154,6 +210,20 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Soft Light" },
       { title: "Slow Start" },
       { title: "Still Here" },
+      { title: "Track 7" },
+      { title: "Track 8" },
+      { title: "Track 9" },
+      { title: "Track 10" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -162,12 +232,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "DJ Wavelength",
     description: "High-energy EDM built to keep the floor moving.",
     genre: "EDM",
-    year: "2026",
     image:
       "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=400&q=60",
     releaseDate: "June 18, 2026",
-    duration: "11 songs, 41 minutes",
-    copyright: "℗ 2026 DJ Wavelength under exclusive license to Pulse Records",
+    label: "Pulse Records",
     tracks: [
       { title: "Bass Drop", highlighted: true },
       { title: "Overdrive", highlighted: true },
@@ -180,6 +248,15 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Aftermath" },
       { title: "Sunrise Set" },
       { title: "Reload" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
   {
@@ -188,12 +265,10 @@ export const listenNowItems: ListenNowItem[] = [
     artist: "Marina Cole",
     description: "Smooth R&B grooves for winding down slow.",
     genre: "R&B",
-    year: "2026",
     image:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=400&q=60",
     releaseDate: "September 12, 2026",
-    duration: "9 songs, 34 minutes",
-    copyright: "℗ 2026 Marina Cole under exclusive license to Velvet Hour Music",
+    label: "Velvet Hour Music",
     tracks: [
       { title: "Late Night Vibes", highlighted: true },
       { title: "Slow Dance", highlighted: true },
@@ -204,6 +279,17 @@ export const listenNowItems: ListenNowItem[] = [
       { title: "Still Up" },
       { title: "Wind Down" },
       { title: "Til Morning" },
+      { title: "Track 10" },
+      { title: "Track 11" },
+      { title: "Track 12" },
+      { title: "Track 13" },
+      { title: "Track 14" },
+      { title: "Track 15" },
+      { title: "Track 16" },
+      { title: "Track 17" },
+      { title: "Track 18" },
+      { title: "Track 19" },
+      { title: "Track 20" },
     ],
   },
 ];

@@ -20,6 +20,10 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="album/[id]" options={{ animation: "fade" }} />
+        <Stack.Screen
+          name="now-playing"
+          options={{ animation: "slide_from_bottom" }}
+        />
       </Stack>
     </GluestackUIProvider>
   );

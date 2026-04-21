@@ -3,7 +3,6 @@ import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { BlurTargetView } from "expo-blur";
-
 import { AlbumDetailHeader } from "@/components/album/album-detail-header";
 import { AlbumHero } from "@/components/album/album-hero";
 import { AlbumMetaFooter } from "@/components/album/album-meta-footer";
@@ -42,20 +41,22 @@ export default function AlbumDetail() {
     >
       <BlurTargetView ref={blurTargetRef} style={{ flex: 1 }}>
         <View className="flex-1 bg-background">
-          <AlbumDetailHeader />
+          <View
+            style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}
+          >
+            <AlbumDetailHeader />
+          </View>
 
-          <ScrollView contentContainerClassName="pb-8">
-            <AlbumHero album={album} />
-            <AlbumTracklist
-              tracks={album.tracks}
-              album={album}
-              onSelectTrack={setSelectedSong}
-            />
-            <AlbumMetaFooter
-              releaseDate={album.releaseDate}
-              duration={album.duration}
-              copyright={album.copyright}
-            />
+          <ScrollView contentContainerClassName="items-center pb-8">
+            <View className="w-full max-w-2xl pt-16">
+              <AlbumHero album={album} />
+              <AlbumTracklist
+                tracks={album.tracks}
+                album={album}
+                onSelectTrack={setSelectedSong}
+              />
+              <AlbumMetaFooter album={album} />
+            </View>
           </ScrollView>
         </View>
       </BlurTargetView>

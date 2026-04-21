@@ -1,7 +1,10 @@
-import { Image, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { MoreVertical } from "lucide-react-native";
 
 import { favouriteItems } from "@/data/favourites";
+import { realSong, useRealSongMetadata } from "@/data/real-song";
+import { usePagedWidth } from "@/hooks/use-paged-width";
+import { usePlaySong } from "@/hooks/use-play-song";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import type { SongItem } from "@/types/music";
 
@@ -16,10 +19,9 @@ export function FavouriteSection({
   onSelectSong: (song: SongItem) => void;
 }) {
   const { colors } = useThemeColors();
-  const { width: windowWidth } = useWindowDimensions();
-  // Leave a peek of the next page visible so it reads as swipeable.
-  // Cap page width on wide/desktop viewports so rows don't stretch edge to edge.
-  const favouritePageWidth = Math.min(windowWidth - 32, 420);
+  const favouritePageWidth = usePagedWidth();
+  const playSong = usePlaySong();
+  const realSongMetadata = useRealSongMetadata();
 
   return (
     <>
@@ -41,34 +43,48 @@ export function FavouriteSection({
         {favouritePages.map((page, pageIndex) => (
           <View key={pageIndex} style={{ width: favouritePageWidth }}>
             <View className="gap-3 pl-4 pr-6">
-              {page.map((item) => (
-                <View key={item.id} className="flex-row items-center gap-3">
-                  <Image
-                    source={{ uri: item.image }}
-                    className="h-14 w-14 rounded-2xl border border-slate-50 dark:border-gray-800"
-                  />
-                  <View className="flex-1">
-                    <Text
-                      className="font-medium text-foreground"
-                      numberOfLines={1}
-                    >
-                      {item.title}
-                    </Text>
-                    <Text
-                      className="text-sm text-muted-foreground"
-                      numberOfLines={1}
-                    >
-                      {item.artist}
-                    </Text>
-                  </View>
+              {page.map((rawItem) => {
+                const item =
+                  rawItem.id === realSong.id && realSongMetadata
+                    ? {
+                        ...rawItem,
+                        artist: realSongMetadata.artist,
+                        image: realSongMetadata.image,
+                      }
+                    : rawItem;
+                return (
                   <Pressable
-                    className="p-2"
-                    onPress={() => onSelectSong(item)}
+                    key={item.id}
+                    className="flex-row items-center gap-3"
+                    onPress={() => playSong(item)}
                   >
-                    <MoreVertical size={20} color={colors.mutedForeground} />
+                    <Image
+                      source={{ uri: item.image }}
+                      className="h-14 w-14 rounded-2xl border border-slate-50 dark:border-gray-800"
+                    />
+                    <View className="flex-1">
+                      <Text
+                        className="font-medium text-foreground"
+                        numberOfLines={1}
+                      >
+                        {item.title}
+                      </Text>
+                      <Text
+                        className="text-sm text-muted-foreground"
+                        numberOfLines={1}
+                      >
+                        {item.artist}
+                      </Text>
+                    </View>
+                    <Pressable
+                      className="p-2"
+                      onPress={() => onSelectSong(item)}
+                    >
+                      <MoreVertical size={20} color={colors.mutedForeground} />
+                    </Pressable>
                   </Pressable>
-                </View>
-              ))}
+                );
+              })}
             </View>
           </View>
         ))}

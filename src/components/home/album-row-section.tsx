@@ -1,6 +1,7 @@
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { ChevronRight } from "lucide-react-native";
 
+import { usePlaySong } from "@/hooks/use-play-song";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import type { SongItem } from "@/types/music";
 
@@ -12,6 +13,7 @@ export function AlbumRowSection({
   items: SongItem[];
 }) {
   const { colors } = useThemeColors();
+  const playSong = usePlaySong();
 
   return (
     <>
@@ -27,7 +29,11 @@ export function AlbumRowSection({
         contentContainerClassName="gap-4 px-4"
       >
         {items.map((item) => (
-          <View key={item.id} className="w-36">
+          <Pressable
+            key={item.id}
+            className="w-36"
+            onPress={() => playSong(item)}
+          >
             <Image
               source={{ uri: item.image }}
               className="h-36 w-36 rounded-2xl border border-slate-50 dark:border-gray-800"
@@ -44,7 +50,7 @@ export function AlbumRowSection({
             >
               {item.artist}
             </Text>
-          </View>
+          </Pressable>
         ))}
       </ScrollView>
     </>

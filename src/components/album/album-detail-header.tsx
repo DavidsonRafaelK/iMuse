@@ -8,9 +8,17 @@ export function AlbumDetailHeader() {
   const { colors } = useThemeColors();
   const router = useRouter();
 
+  const goBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/");
+    }
+  };
+
   return (
-    <View className="flex-row items-center justify-between px-4 py-2">
-      <Pressable className="p-2" onPress={() => router.back()}>
+    <View className="flex-row items-center justify-between bg-transparent px-4 py-2">
+      <Pressable className="p-2" onPress={goBack}>
         <ArrowLeft color={colors.foreground} size={22} />
       </Pressable>
       <View className="flex-row items-center gap-2">

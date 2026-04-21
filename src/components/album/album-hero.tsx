@@ -3,7 +3,7 @@ import { Image, Pressable, Text, View } from "react-native";
 import { Check, Play, Plus, Shuffle } from "lucide-react-native";
 
 import { useThemeColors } from "@/hooks/use-theme-colors";
-import type { ListenNowItem } from "@/data/listen-now";
+import { getReleaseYear, type ListenNowItem } from "@/data/listen-now";
 
 export function AlbumHero({ album }: { album: ListenNowItem }) {
   const { colors } = useThemeColors();
@@ -23,7 +23,7 @@ export function AlbumHero({ album }: { album: ListenNowItem }) {
         {album.artist}
       </Text>
       <Text className="mt-1 text-center text-sm text-muted-foreground">
-        {album.genre} {album.year}
+        {album.genre} {getReleaseYear(album)}
       </Text>
 
       <View className="mt-6 flex-row items-center gap-4">

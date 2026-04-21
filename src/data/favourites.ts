@@ -1,6 +1,15 @@
+import { FALLBACK_IMAGE, realSong } from "@/data/real-song";
 import type { SongItem } from "@/types/music";
 
 export const favouriteItems: SongItem[] = [
+  {
+    id: realSong.id,
+    title: realSong.title,
+    // Artist/image are detected from the file's ID3 tags at runtime —
+    // FavouriteSection overrides these placeholders once that resolves.
+    artist: "",
+    image: FALLBACK_IMAGE,
+  },
   {
     id: "1",
     title: "Blinding Lights",

@@ -8,22 +8,30 @@ export function PlayerCoverView({
   image,
   title,
   artist,
-  isRealSong,
+  canPlay,
   playing,
   currentTime,
   duration,
   onTogglePlayback,
   onSeek,
+  hasPrevious,
+  hasNext,
+  onPrevious,
+  onNext,
 }: {
   image: string;
   title: string;
   artist: string;
-  isRealSong: boolean;
+  canPlay: boolean;
   playing: boolean;
   currentTime: number;
   duration: number;
   onTogglePlayback: () => void;
   onSeek: (seconds: number) => void;
+  hasPrevious: boolean;
+  hasNext: boolean;
+  onPrevious: () => void;
+  onNext: () => void;
 }) {
   const { colors } = useThemeColors();
 
@@ -49,16 +57,21 @@ export function PlayerCoverView({
       </View>
 
       <View className="mt-4 flex-row items-center gap-10">
-        <Pressable className="p-2" onPress={() => console.log("previous")}>
+        <Pressable
+          className="p-2"
+          disabled={!hasPrevious}
+          onPress={onPrevious}
+        >
           <SkipBack
             color={colors.foreground}
             fill={colors.foreground}
             size={26}
+            opacity={hasPrevious ? 1 : 0.3}
           />
         </Pressable>
         <Pressable
           className={
-            isRealSong
+            canPlay
               ? "h-16 w-16 items-center justify-center rounded-full bg-foreground"
               : "h-16 w-16 items-center justify-center rounded-full bg-secondary"
           }
@@ -66,23 +79,24 @@ export function PlayerCoverView({
         >
           {playing ? (
             <Pause
-              color={isRealSong ? colors.background : colors.foreground}
-              fill={isRealSong ? colors.background : "transparent"}
+              color={canPlay ? colors.background : colors.foreground}
+              fill={canPlay ? colors.background : "transparent"}
               size={26}
             />
           ) : (
             <Play
-              color={isRealSong ? colors.background : colors.foreground}
-              fill={isRealSong ? colors.background : "transparent"}
+              color={canPlay ? colors.background : colors.foreground}
+              fill={canPlay ? colors.background : "transparent"}
               size={26}
             />
           )}
         </Pressable>
-        <Pressable className="p-2" onPress={() => console.log("next")}>
+        <Pressable className="p-2" disabled={!hasNext} onPress={onNext}>
           <SkipForward
             color={colors.foreground}
             fill={colors.foreground}
             size={26}
+            opacity={hasNext ? 1 : 0.3}
           />
         </Pressable>
       </View>

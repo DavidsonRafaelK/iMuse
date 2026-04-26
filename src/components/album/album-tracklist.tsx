@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 import { MoreVertical } from "lucide-react-native";
 
@@ -18,6 +19,16 @@ export function AlbumTracklist({
   const { colors } = useThemeColors();
   const playSong = usePlaySong();
 
+  const queueSongs = useMemo(
+    () =>
+      tracks.map((track) => ({
+        title: track.title,
+        artist: album.artist,
+        image: album.image,
+      })),
+    [tracks, album.artist, album.image],
+  );
+
   return (
     <View className="mt-6 px-4">
       {tracks.map((track, i) => (
@@ -25,11 +36,7 @@ export function AlbumTracklist({
           key={track.title}
           className="flex-row items-center gap-3 py-3"
           onPress={() =>
-            playSong({
-              title: track.title,
-              artist: album.artist,
-              image: album.image,
-            })
+            playSong(queueSongs[i], { queue: queueSongs, index: i })
           }
         >
           <Text className="w-5 text-muted-foreground">{i + 1}</Text>

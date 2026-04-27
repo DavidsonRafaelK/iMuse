@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { MoreVertical } from "lucide-react-native";
 
@@ -8,11 +9,6 @@ import { usePlaySong } from "@/hooks/use-play-song";
 import { useThemeColors } from "@/hooks/use-theme-colors";
 import type { SongItem } from "@/types/music";
 
-const favouritePages = Array.from(
-  { length: Math.ceil(favouriteItems.length / 4) },
-  (_, i) => favouriteItems.slice(i * 4, i * 4 + 4),
-);
-
 export function FavouriteSection({
   onSelectSong,
 }: {
@@ -22,6 +18,25 @@ export function FavouriteSection({
   const favouritePageWidth = usePagedWidth();
   const playSong = usePlaySong();
   const realSongMetadata = useRealSongMetadata();
+
+  // Applied once so Previous/Next in now-playing walks the same list (with
+  // the same real-song art/artist) the user sees here, paged or not.
+  const queueSongs = useMemo(
+    () =>
+      favouriteItems.map((item) =>
+        item.id === realSong.id && realSongMetadata
+          ? { ...item, artist: realSongMetadata.artist, image: realSongMetadata.image }
+          : item,
+      ),
+    [realSongMetadata],
+  );
+  const favouritePages = useMemo(
+    () =>
+      Array.from({ length: Math.ceil(queueSongs.length / 4) }, (_, i) =>
+        queueSongs.slice(i * 4, i * 4 + 4),
+      ),
+    [queueSongs],
+  );
 
   return (
     <>
@@ -43,20 +58,15 @@ export function FavouriteSection({
         {favouritePages.map((page, pageIndex) => (
           <View key={pageIndex} style={{ width: favouritePageWidth }}>
             <View className="gap-3 pl-4 pr-6">
-              {page.map((rawItem) => {
-                const item =
-                  rawItem.id === realSong.id && realSongMetadata
-                    ? {
-                        ...rawItem,
-                        artist: realSongMetadata.artist,
-                        image: realSongMetadata.image,
-                      }
-                    : rawItem;
+              {page.map((item, i) => {
+                const globalIndex = pageIndex * 4 + i;
                 return (
                   <Pressable
                     key={item.id}
                     className="flex-row items-center gap-3"
-                    onPress={() => playSong(item)}
+                    onPress={() =>
+                      playSong(item, { queue: queueSongs, index: globalIndex })
+                    }
                   >
                     <Image
                       source={{ uri: item.image }}

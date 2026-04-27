@@ -1,4 +1,4 @@
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, Text } from "react-native";
 import { ChevronRight } from "lucide-react-native";
 
 import { usePlaySong } from "@/hooks/use-play-song";
@@ -28,11 +28,11 @@ export function AlbumRowSection({
         className="mt-3"
         contentContainerClassName="gap-4 px-4"
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <Pressable
             key={item.id}
             className="w-36"
-            onPress={() => playSong(item)}
+            onPress={() => playSong(item, { queue: items, index })}
           >
             <Image
               source={{ uri: item.image }}

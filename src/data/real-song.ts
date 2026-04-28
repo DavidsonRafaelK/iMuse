@@ -1,8 +1,9 @@
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { Asset } from "expo-asset";
-import { File } from "expo-file-system";
 
+import { cacheCoverImage } from "@/lib/cover-cache";
 import { parseId3 } from "@/lib/id3";
+import { readId3Bytes } from "@/lib/read-id3-bytes";
 
 export type LyricLine = {
   time: number; // seconds
@@ -45,33 +46,44 @@ async function loadMetadata(): Promise<RealSongMetadata> {
   if (pendingLoad) return pendingLoad;
 
   pendingLoad = (async () => {
-    const asset = Asset.fromModule(audioSource);
-    await asset.downloadAsync();
+    try {
+      const asset = Asset.fromModule(audioSource);
+      await asset.downloadAsync();
 
-    const file = new File(asset.localUri ?? asset.uri);
-    const buffer = await file.arrayBuffer();
-    const tags = parseId3(new Uint8Array(buffer));
+      const uri = asset.localUri ?? asset.uri;
+      const tags = parseId3(await readId3Bytes(uri));
 
-    const metadata: RealSongMetadata = {
-      artist: tags.artist ?? "",
-      album: tags.album,
-      year: tags.year,
-      image: tags.coverDataUri ?? FALLBACK_IMAGE,
-      lyrics: tags.lyrics,
-    };
-    cachedMetadata = metadata;
-    notifyListeners();
-    return metadata;
+      const metadata: RealSongMetadata = {
+        artist: tags.artist ?? "",
+        album: tags.album,
+        year: tags.year,
+        image: tags.cover ? cacheCoverImage(uri, tags.cover) : FALLBACK_IMAGE,
+        lyrics: tags.lyrics,
+      };
+      cachedMetadata = metadata;
+      notifyListeners();
+      return metadata;
+    } catch (error) {
+      console.error("Failed to read real song metadata:", error);
+      pendingLoad = null;
+      throw error;
+    }
   })();
 
   return pendingLoad;
 }
 
-// Kick off the parse immediately so it's usually already resolved by the
-// time a screen needs it.
-loadMetadata();
-
 export function useRealSongMetadata(): RealSongMetadata | null {
+  // Deliberately started from a subscriber rather than at import time.
+  // Kicking the parse off at module scope meant the asset download and tag
+  // read ran before React could render anything, holding the splash screen
+  // up behind work no first screen actually needs.
+  useEffect(() => {
+    // Already logged inside loadMetadata; a rejection here just means the
+    // hook keeps reporting null, which callers handle.
+    loadMetadata().catch(() => {});
+  }, []);
+
   return useSyncExternalStore(
     (onStoreChange) => {
       listeners.add(onStoreChange);

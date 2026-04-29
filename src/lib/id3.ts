@@ -7,32 +7,24 @@ export type Id3SyncedLyricLine = {
   text: string;
 };
 
+// Cover art is handed back as raw bytes rather than a data URI: turning a
+// few hundred KB into base64 in JS is slow enough to be visible, and the
+// image can be written to a cache file and referenced by URI instead.
+export type Id3Cover = {
+  mime: string;
+  bytes: Uint8Array;
+};
+
 export type Id3Tags = {
   artist?: string;
   album?: string;
   year?: string;
-  coverDataUri?: string;
+  cover?: Id3Cover;
   lyrics: Id3SyncedLyricLine[];
 };
 
-const BASE64_CHARS =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-function bytesToBase64(bytes: Uint8Array): string {
-  let result = "";
-  const len = bytes.length;
-  for (let i = 0; i < len; i += 3) {
-    const b0 = bytes[i];
-    const b1 = i + 1 < len ? bytes[i + 1] : 0;
-    const b2 = i + 2 < len ? bytes[i + 2] : 0;
-
-    result += BASE64_CHARS[b0 >> 2];
-    result += BASE64_CHARS[((b0 & 0x03) << 4) | (b1 >> 4)];
-    result += i + 1 < len ? BASE64_CHARS[((b1 & 0x0f) << 2) | (b2 >> 6)] : "=";
-    result += i + 2 < len ? BASE64_CHARS[b2 & 0x3f] : "=";
-  }
-  return result;
-}
+/** Bytes of the ID3 header that precede the tag body. */
+export const ID3_HEADER_SIZE = 10;
 
 function decodeLatin1(bytes: Uint8Array): string {
   let out = "";
@@ -152,7 +144,7 @@ function parseTextFrame(frameData: Uint8Array): string {
   return stripTrailingNulls(text).split("\u0000")[0] ?? "";
 }
 
-function parseApicFrame(frameData: Uint8Array): string | undefined {
+function parseApicFrame(frameData: Uint8Array): Id3Cover | undefined {
   const encoding = frameData[0];
   let offset = 1;
 
@@ -169,7 +161,7 @@ function parseApicFrame(frameData: Uint8Array): string | undefined {
 
   const imageBytes = frameData.subarray(offset);
   if (imageBytes.length === 0) return undefined;
-  return `data:${mime};base64,${bytesToBase64(imageBytes)}`;
+  return { mime, bytes: imageBytes };
 }
 
 function parseSyltFrame(frameData: Uint8Array): Id3SyncedLyricLine[] {
@@ -195,23 +187,48 @@ function parseSyltFrame(frameData: Uint8Array): Id3SyncedLyricLine[] {
   return lines;
 }
 
+function hasId3Magic(bytes: Uint8Array): boolean {
+  return (
+    bytes.length >= ID3_HEADER_SIZE &&
+    bytes[0] === 0x49 && // 'I'
+    bytes[1] === 0x44 && // 'D'
+    bytes[2] === 0x33 // '3'
+  );
+}
+
+// Given just the first ID3_HEADER_SIZE bytes of a file, reports how many
+// bytes the whole tag occupies (header included), or 0 when the file
+// carries no ID3 tag. Lets a caller read the tag off disk without pulling
+// in the audio that follows it.
+export function readId3TotalSize(header: Uint8Array): number {
+  if (!hasId3Magic(header)) return 0;
+  return ID3_HEADER_SIZE + readSyncsafeInt(header, 6);
+}
+
+// Header flag 0x40 means an extended header sits between the header and the
+// first frame. Its own length is stored differently per version: 2.4 counts
+// the whole extended header as a syncsafe int, 2.3 stores a plain int that
+// excludes the four size bytes themselves. Reading frames from the wrong
+// offset yields pure garbage, so skip whatever it claims.
+function extendedHeaderSize(bytes: Uint8Array, majorVersion: number): number {
+  const hasExtendedHeader = (bytes[5] & 0x40) !== 0;
+  if (!hasExtendedHeader || bytes.length < ID3_HEADER_SIZE + 4) return 0;
+
+  return majorVersion >= 4
+    ? readSyncsafeInt(bytes, ID3_HEADER_SIZE)
+    : 4 + readUint32BE(bytes, ID3_HEADER_SIZE);
+}
+
 export function parseId3(bytes: Uint8Array): Id3Tags {
   const tags: Id3Tags = { lyrics: [] };
 
-  if (
-    bytes.length < 10 ||
-    bytes[0] !== 0x49 || // 'I'
-    bytes[1] !== 0x44 || // 'D'
-    bytes[2] !== 0x33 // '3'
-  ) {
-    return tags;
-  }
+  if (!hasId3Magic(bytes)) return tags;
 
   const majorVersion = bytes[3];
   const tagSize = readSyncsafeInt(bytes, 6);
-  const tagEnd = Math.min(10 + tagSize, bytes.length);
+  const tagEnd = Math.min(ID3_HEADER_SIZE + tagSize, bytes.length);
 
-  let offset = 10;
+  let offset = ID3_HEADER_SIZE + extendedHeaderSize(bytes, majorVersion);
   while (offset + 10 <= tagEnd) {
     const id = decodeLatin1(bytes.subarray(offset, offset + 4));
     if (id === "\u0000\u0000\u0000\u0000") break;
@@ -232,7 +249,7 @@ export function parseId3(bytes: Uint8Array): Id3Tags {
       else if (id === "TDRC" || id === "TYER") {
         tags.year = parseTextFrame(frameData).slice(0, 4);
       } else if (id.startsWith("APIC")) {
-        tags.coverDataUri = parseApicFrame(frameData);
+        tags.cover = parseApicFrame(frameData);
       } else if (id.startsWith("SYLT")) {
         tags.lyrics = parseSyltFrame(frameData);
       }
